@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Face Mask Detection</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📷 Face Mask Detection</h1>
+    <p>Upload an image to detect face masks</p>
+
+    <div class="upload-section">
+      <input type="file" id="imageInput" accept="image/*" />
+      <label for="imageInput" class="custom-file-upload">📂 Choose Image</label>
+      <button id="predictBtn">🔍 Predict</button>
+    </div>
+
+    <div class="canvas-container">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div id="results" class="results-box waiting">
+      <p>🧠 Waiting for prediction...</p>
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
