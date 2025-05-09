@@ -21,6 +21,12 @@ The model detects faces in an image and classifies them as:
 
 You can send an image to the `/predict` endpoint and get back:
 - Bounding box coordinates
+
+## 📥 Download Trained Model
+
+Due to GitHub file size limits, the trained PyTorch model (`model.pth`) is not included.  
+You can download it [here]([https://drive.google.com/your-model-link ](https://www.dropbox.com/scl/fi/qwobxexgkq74lkpbhq2ay/model.pth?rlkey=6nbin0qb4riatdk49x3w2eui8&st=ujk4ci62&dl=1))  
+Then place it in the root directory alongside `app.py`
 - Class labels
 - Confidence scores
 
