@@ -37,7 +37,7 @@ Make sure you have Python 3.8+ and the following installed:
 
 ```bash
 pip install -r requirements.txt
-
+```
 
 The model was trained using:
 
