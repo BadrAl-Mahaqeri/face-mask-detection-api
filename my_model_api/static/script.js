@@ -6,7 +6,6 @@ const resultsDiv = document.querySelector('#results');
 
 let currentImage = null;
 
-// Load image into canvas
 imageInput.addEventListener('change', () => {
   const file = imageInput.files[0];
   if (!file) return;
@@ -24,76 +23,74 @@ imageInput.addEventListener('change', () => {
   };
   reader.readAsDataURL(file);
 
-  // Reset result area
-  resultsDiv.className = "results-box waiting";
-  resultsDiv.innerHTML = `<p><div class="spinner"></div>Analyzing image...</p>`;
+  resultsDiv.className = 'results-box waiting';
+  resultsDiv.innerHTML = `<p>🧠 Waiting for prediction...</p>`;
 });
 
-// Send prediction request
 predictBtn.addEventListener('click', async () => {
   if (!currentImage) {
     alert("Please upload an image first.");
     return;
   }
 
-  resultsDiv.className = "results-box waiting";
-  resultsDiv.innerHTML = `<p><div class="spinner"></div> Predicting...</p>`;
+  resultsDiv.className = 'results-box waiting';
+  resultsDiv.innerHTML = `<p><div class="spinner"></div> Analyzing image...</p>`;
 
   try {
     const response = await fetch("/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ image: currentImage.src })  // send full base64 string
+      body: JSON.stringify({ image: currentImage.src })
     });
 
     const result = await response.json();
 
     if (result.error) {
-      resultsDiv.className = "results-box error";
+      resultsDiv.className = 'results-box error';
       resultsDiv.innerHTML = `<strong>Error:</strong> ${result.error}`;
       return;
     }
 
-    // Redraw image and draw bounding boxes
+    // Redraw image
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(currentImage, 0, 0);
 
-    // Display predictions
-    if (result.predictions.length > 0) {
-      const confidentPredictions = result.predictions.filter(p => p.score >= 0.6);
+    // Filter predictions >= 60%
+    const confidentPredictions = result.predictions.filter(p => p.score >= 0.6);
 
-      resultsDiv.className = "results-box success";
+    if (confidentPredictions.length > 0) {
+      const avgConfidence = (
+        confidentPredictions.reduce((sum, p) => sum + p.score, 0) /
+        confidentPredictions.length
+      ).toFixed(2);
+
+      resultsDiv.className = 'results-box success';
       resultsDiv.innerHTML = `
-        <strong>Total Detections:</strong> ${confidentPredictions.length}
-        <ul>
-          ${confidentPredictions.map(pred => `
-            <li>🏷️ <strong>${pred.label}</strong> - Confidence: ${(pred.score * 100).toFixed(1)}%</li>
-          `).join('')}
-        </ul>`;
+        <strong>Total Detections:</strong> ${confidentPredictions.length}<br/>
+        <strong>With an average confidence rating of</strong> ${(avgConfidence * 100).toFixed(1)}%
+      `;
     } else {
-      resultsDiv.className = "results-box success";
-      resultsDiv.innerHTML = "✅ No detections found.";
+      resultsDiv.className = 'results-box success';
+      resultsDiv.innerHTML = '✅ No detections found.';
     }
 
     // Draw boxes on canvas
-    result.predictions.forEach(pred => {
+    confidentPredictions.forEach(pred => {
       const [x1, y1, x2, y2] = pred.box;
 
-      // Only draw if score is above threshold
-      if (pred.score >= 0.6) {
-        ctx.strokeStyle = "#FF0000";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-
-        ctx.fillStyle = "#FF0000";
-        ctx.font = "16px Arial";
-        ctx.fillText(`${pred.label} (${(pred.score * 100).toFixed(1)}%)`, x1, y1 - 10);
+      let boxColor = "#FF0000";
+      if (pred.label === "with_mask") {
+        boxColor = "#2ecc71"; // green
       }
+
+      ctx.strokeStyle = boxColor;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
     });
 
   } catch (err) {
     console.error(err);
-    resultsDiv.className = "results-box error";
+    resultsDiv.className = 'results-box error';
     resultsDiv.innerHTML = "<strong>Prediction failed.</strong>";
   }
 });
