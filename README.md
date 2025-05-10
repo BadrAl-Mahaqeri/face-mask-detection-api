@@ -4,9 +4,9 @@ A simple Flask-based API that uses a trained PyTorch model to detect face masks 
 
 This project was built from scratch using a Faster R-CNN model trained on a dataset of masked and unmasked faces. It includes:
 - The trained model file (`model.pth`)
-- A Flask API endpoint for inference
-- A basic web interface for testing locally
-- Scripts for training and evaluation
+- A Flask API endpoint for inference.
+- A basic web interface for testing locally.
+- Scripts for training and evaluation.
 
 It’s a good example of how to serve a deep learning model through an API and test it via a browser or Postman.
 
@@ -15,21 +15,22 @@ It’s a good example of how to serve a deep learning model through an API and t
 ## What It Does:
 
 The model detects faces in an image and classifies them as:
-- `with_mask` – person is wearing a mask properly  
-- `without_mask` – person is not wearing a mask  
-- `mask_worn_incorrectly` – optional detection if included in your training data
+- `with_mask` – person is wearing a mask properly.  
+- `without_mask` – person is not wearing a mask.  
+- `mask_worn_incorrectly` – optional detection if included in your training data.
 
 You can send an image to the `/predict` endpoint and get back:
-- Bounding box coordinates
-- Class labels
-- Confidence scores
+- Bounding box coordinates.
+- A green box indicates the person is wearing a mask.
+- A red boxes indicates the person is not wearing a mask.
+- An average confidence score will be displayed below the image.
 
 ---
 ## 📥 Download Trained Model
 
 Due to GitHub file size limits, the trained PyTorch model (`model.pth`) is not included.  
 You can download it [here](https://www.dropbox.com/scl/fi/qwobxexgkq74lkpbhq2ay/model.pth?rlkey=6nbin0qb4riatdk49x3w2eui8&st=ujk4ci62&dl=1)
-Then place it in the root directory alongside `app.py`
+Then place it in the root directory alongside `app.py`.
 
 ## 📦 How to Use It
 
@@ -38,6 +39,8 @@ Make sure you have Python 3.8+ and the following installed:
 ```bash
 pip install -r requirements.txt
 ```
+
+Run the app.py file and it should launch your default browser on the image uploading site.
 
 The model was trained using:
 
